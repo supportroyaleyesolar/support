@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Royal Eye Solar Power | Customer Service & Toll-Free Helpdesk Portal</title>
+  <meta name="description" content="Official Customer Complaint & Service Request Portal for Royal Eye Solar Power (REX). Register and track complaints for inverters, lithium batteries, solar systems, and water heaters.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+
+  <!-- Top Announcement / Toll-Free Bar -->
+  <div class="top-helpline-bar">
+    <div class="container helpline-container">
+      <div class="helpline-left">
+        <span class="live-pulse"></span>
+        <span class="helpline-badge">24/7 TOLL-FREE & HELPLINE SUPPORT</span>
+        <span class="helpline-location" id="top-location-text"><i data-lucide="map-pin"></i> Edamuttam, Thrissur, Kerala</span>
+      </div>
+      <div class="helpline-numbers" id="top-helpline-numbers">
+        <a href="tel:+918075873679" class="phone-link"><i data-lucide="phone-call"></i> +91 80758 73679</a>
+        <a href="tel:+919074572600" class="phone-link"><i data-lucide="phone"></i> +91 90745 72600</a>
+        <a href="https://wa.me/918075873679?text=Hello%20Royal%20Eye%20Solar%20Power,%20I%20need%20service%20support" target="_blank" class="whatsapp-btn-mini">
+          <i data-lucide="message-circle"></i> WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <header class="main-header">
+    <div class="container nav-container">
+      <div class="brand-logo" onclick="app.switchView('customer')">
+        <div class="logo-icon-wrap">
+          <div class="rex-badge" id="brand-rex-badge">REX</div>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title" id="brand-title-wrap">
+            <span class="text-royal">Royal</span> <span class="text-eye">Eye</span>
+          </div>
+          <div class="brand-sub" id="brand-sub-wrap">SOLAR POWER & EXCELLENCE</div>
+        </div>
+      </div>
+
+      <!-- View Switcher: Customer Portal & Tracker only (Admin is at /admin.html - staff only) -->
+      <nav class="nav-actions">
+        <div class="view-tabs" role="tablist">
+          <button class="nav-tab active" id="tab-customer" onclick="app.switchView('customer')">
+            <i data-lucide="user"></i>
+            <span>Customer Portal</span>
+          </button>
+          <button class="nav-tab" id="tab-tracker" onclick="app.switchView('tracker')">
+            <i data-lucide="search"></i>
+            <span>Track Complaint</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ============================================================ -->
+  <!-- VIEW 1: CUSTOMER COMPLAINT PORTAL                            -->
+  <!-- ============================================================ -->
+  <main id="view-customer" class="app-view active-view">
+    <!-- Hero Banner -->
+    <section class="portal-hero">
+      <div class="container hero-layout">
+        <div class="hero-content">
+          <div class="hero-badge" id="hero-badge-text">
+            <i data-lucide="shield-check"></i>
+            Authorized Service & Warranty Support
+          </div>
+          <h1 class="hero-heading" id="hero-heading-text">
+            Register Your <span class="highlight-red">Service Complaint</span> Or Maintenance Request
+          </h1>
+          <p class="hero-desc" id="hero-desc-text">
+            Quick resolution for Inverters, REX Lithium Batteries, Tubular Batteries, Rooftop Solar Plants, and Solar Water Heaters. Our Thrissur-based field engineers are ready for rapid on-site dispatch.
+          </p>
+
+          <div class="hero-metrics" id="hero-metrics-list">
+            <div class="metric-item">
+              <div class="metric-val">&lt; 4 Hours</div>
+              <div class="metric-lbl">Emergency Response</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-val">100%</div>
+              <div class="metric-lbl">Genuine Spare Parts</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-val">Kerala-wide</div>
+              <div class="metric-lbl">Certified Technicians</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Helplines Box -->
+        <div class="hero-helpline-card glass-panel">
+          <div class="card-header">
+            <div class="header-icon red-glow"><i data-lucide="headset"></i></div>
+            <div>
+              <h3>Toll-Free Helpline Desk</h3>
+              <p>Prefer to speak directly to our service desk?</p>
+            </div>
+          </div>
+
+          <div class="call-action-list" id="hero-call-list">
+            <a href="tel:+918075873679" class="call-card">
+              <div class="call-card-icon"><i data-lucide="phone-outgoing"></i></div>
+              <div class="call-card-info">
+                <span class="call-title">General Enquiries &amp; Service Desk</span>
+                <span class="call-num">+91 80758 73679</span>
+              </div>
+              <span class="call-btn-chip">Call Now</span>
+            </a>
+
+            <a href="tel:+919074572600" class="call-card">
+              <div class="call-card-icon"><i data-lucide="headset"></i></div>
+              <div class="call-card-info">
+                <span class="call-title">Customer Support &amp; Technical Helpline</span>
+                <span class="call-num">+91 90745 72600</span>
+              </div>
+              <span class="call-btn-chip">Call Now</span>
+            </a>
+          </div>
+
+          <div class="hub-address-box">
+            <i data-lucide="map-pin"></i>
+            <span id="hero-hub-address"><strong>Central Service Center:</strong> Edamuttam, Thrissur, Kerala - 680568</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partner Brands Strip -->
+    <section class="partner-strip">
+      <div class="container partner-inner">
+        <span class="partner-label">Authorized Service & Partner Systems:</span>
+        <div class="partner-tags" id="partner-tags-container">
+          <span class="partner-pill">WAAREE</span>
+          <span class="partner-pill">Vikram Solar</span>
+          <span class="partner-pill">Adani Solar</span>
+          <span class="partner-pill">EMMVEE</span>
+          <span class="partner-pill">RenewSys</span>
+          <span class="partner-pill">Eastman</span>
+          <span class="partner-pill">EXIDE</span>
+          <span class="partner-pill">MICROTEK</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="complaint-section" id="register-complaint">
+      <div class="container">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Online Complaint <span class="highlight-red">Registration</span></h2>
+          <p class="section-subtitle">Fill in the product & location details below. A service ticket will be instantly generated for our dispatch team.</p>
+        </div>
+
+        <div class="complaint-form-wrapper glass-panel">
+          <form id="complaint-form" onsubmit="app.handleComplaintSubmit(event)">
+            
+            <!-- Step 1: Product Selection -->
+            <div class="form-block">
+              <div class="block-title">
+                <span class="step-num">1</span>
+                <div>
+                  <h3>Select Equipment / Service Required</h3>
+                  <p>Choose the product category you are experiencing an issue with</p>
+                </div>
+              </div>
+
+              <div class="product-cards-grid" id="product-selector-grid">
+                <!-- Inverters -->
+                <label class="product-card" onclick="app.onProductSelected('Inverters')">
+                  <input type="radio" name="product_type" value="Inverters" required checked>
+                  <div class="product-card-content">
+                    <div class="product-icon"><i data-lucide="cpu"></i></div>
+                    <h4>Inverter</h4>
+                    <p>Off-Grid, On-Grid, Hybrid & Home Inverters</p>
+                  </div>
+                </label>
+
+                <!-- Battery -->
+                <label class="product-card" onclick="app.onProductSelected('Battery')">
+                  <input type="radio" name="product_type" value="Battery">
+                  <div class="product-card-content">
+                    <div class="product-icon"><i data-lucide="battery"></i></div>
+                    <h4>Tubular Battery</h4>
+                    <p>Lead-Acid, Tall Tubular & Solar Backup Batteries</p>
+                  </div>
+                </label>
+
+                <!-- Lithium Battery -->
+                <label class="product-card featured-rex" onclick="app.onProductSelected('Lithium Battery')">
+                  <input type="radio" name="product_type" value="Lithium Battery">
+                  <div class="product-card-content">
+                    <span class="badge-rex">REX Smart</span>
+                    <div class="product-icon"><i data-lucide="battery-charging"></i></div>
+                    <h4>Lithium Battery</h4>
+                    <p>REX LiFePO4 Smart Battery & Wallmount Systems</p>
+                  </div>
+                </label>
+
+                <!-- Solar Service -->
+                <label class="product-card" onclick="app.onProductSelected('Solar Service')">
+                  <input type="radio" name="product_type" value="Solar Service">
+                  <div class="product-card-content">
+                    <div class="product-icon"><i data-lucide="sun"></i></div>
+                    <h4>Solar Service</h4>
+                    <p>Rooftop Solar, Low Generation, Wiring & AMC</p>
+                  </div>
+                </label>
+
+                <!-- Solar Water Service -->
+                <label class="product-card" onclick="app.onProductSelected('Solar Water Service')">
+                  <input type="radio" name="product_type" value="Solar Water Service">
+                  <div class="product-card-content">
+                    <div class="product-icon"><i data-lucide="flame"></i></div>
+                    <h4>Solar Water Service</h4>
+                    <p>Solar Water Heaters, Collector & Piping Service</p>
+                  </div>
+                </label>
+
+                <!-- Water Heater -->
+                <label class="product-card" onclick="app.onProductSelected('Water Heater')">
+                  <input type="radio" name="product_type" value="Water Heater">
+                  <div class="product-card-content">
+                    <div class="product-icon"><i data-lucide="droplet"></i></div>
+                    <h4>Water Heater</h4>
+                    <p>Electric Geysers & Hybrid Heat Pump Heaters</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Step 2: Issue Details -->
+            <div class="form-block">
+              <div class="block-title">
+                <span class="step-num">2</span>
+                <div>
+                  <h3>Issue Description & System Details</h3>
+                  <p>Describe the fault or symptom so our engineers bring right tools & spares</p>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="issue-preset">Common Issue / Symptom <span style="font-weight:normal;color:var(--text-muted);font-size:0.82rem;">(Optional)</span></label>
+                  <select id="issue-preset" class="form-control" onchange="app.handleIssuePresetChange(this.value)">
+                    <option value="">Select common fault symptom (optional)...</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="priority-level">Urgency / Service Priority *</label>
+                  <select id="priority-level" class="form-control" required>
+                    <option value="Normal">Normal (Routine checkup / Scheduled visit)</option>
+                    <option value="High">High (Intermittent outage / Partial backup)</option>
+                    <option value="Emergency" class="opt-emergency">Emergency (Complete blackout / Sparks / Leakage)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="brand-model">Product Brand &amp; Model <span style="font-weight:normal;color:var(--text-muted);font-size:0.82rem;">(Optional)</span></label>
+                  <input type="text" id="brand-model" class="form-control" placeholder="e.g., REX 5kW Hybrid, WAAREE 540W, Exide 150Ah...">
+                </div>
+
+                <div class="form-group">
+                  <label for="installation-type">Installation Setting *</label>
+                  <select id="installation-type" class="form-control" required>
+                    <option value="Residential (Home)">Residential (Home)</option>
+                    <option value="Commercial (Office / Clinic)">Commercial (Office / Clinic)</option>
+                    <option value="Shop / Commercial Establishment">Shop / Commercial Establishment</option>
+                    <option value="Industrial / Factory">Industrial / Factory</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="issue-description">Detailed Description of the Issue <span style="font-weight:normal;color:var(--text-muted);font-size:0.82rem;">(Optional)</span></label>
+                <textarea id="issue-description" class="form-control" rows="3" placeholder="Please describe what happens, error codes on display (e.g. Error E04, Overload), strange sounds, or leakage symptoms (optional)..."></textarea>
+              </div>
+
+              <!-- Upload Photo Simulator -->
+              <div class="form-group">
+                <label>Attach Equipment Photo / Error Display Screen (Optional)</label>
+                <div class="upload-box" id="upload-box" onclick="document.getElementById('photo-upload-input').click()">
+                  <i data-lucide="camera"></i>
+                  <span id="upload-label-text">Click to capture or upload photo of inverter screen / battery / leakage</span>
+                  <input type="file" id="photo-upload-input" accept="image/*" style="display: none;" onchange="app.handlePhotoUpload(event)">
+                </div>
+                <div id="photo-preview-wrap" class="photo-preview-wrap hidden">
+                  <img id="photo-preview-img" src="" alt="Uploaded issue preview">
+                  <button type="button" class="btn-remove-photo" onclick="app.removeUploadedPhoto()">&times; Remove</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Customer Contact & Location -->
+            <div class="form-block">
+              <div class="block-title">
+                <span class="step-num">3</span>
+                <div>
+                  <h3>Customer Contact & Site Address</h3>
+                  <p>Technicians will be dispatched to this location</p>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="cust-name">Customer Full Name *</label>
+                  <input type="text" id="cust-name" class="form-control" placeholder="e.g. Radhakrishnan Menon" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="cust-phone">Mobile Number (WhatsApp Enabled) *</label>
+                  <input type="tel" id="cust-phone" class="form-control" placeholder="10-digit mobile (e.g. 9846653834)" pattern="[0-9]{10}" required>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="cust-alt-phone">Alternate Contact Number</label>
+                  <input type="tel" id="cust-alt-phone" class="form-control" placeholder="Secondary phone number">
+                </div>
+
+                <div class="form-group">
+                  <label for="cust-district">District / Region *</label>
+                  <select id="cust-district" class="form-control" required>
+                    <option value="Thrissur" selected>Thrissur (HQ Hub)</option>
+                    <option value="Ernakulam">Ernakulam</option>
+                    <option value="Malappuram">Malappuram</option>
+                    <option value="Palakkad">Palakkad</option>
+                    <option value="Kozhikode">Kozhikode</option>
+                    <option value="Kottayam">Kottayam</option>
+                    <option value="Other Kerala District">Other Kerala District</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="cust-address">Street Address / House Name *</label>
+                  <input type="text" id="cust-address" class="form-control" placeholder="House No / Villa / Street" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="cust-landmark">Landmark / City / Pin Code *</label>
+                  <input type="text" id="cust-landmark" class="form-control" placeholder="Near Edamuttam Junction, 680568" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="form-submit-row">
+              <div class="form-notice">
+                <i data-lucide="info"></i>
+                <span>You will receive an instant Ticket ID and direct technician contact details upon submission.</span>
+              </div>
+              <button type="submit" class="btn-primary btn-submit-complaint" id="btn-submit-ticket">
+                <i data-lucide="send"></i>
+                <span>Submit Service Complaint</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Confirmation Modal / Card -->
+    <div id="success-modal" class="modal-backdrop hidden">
+      <div class="modal-card modal-success">
+        <div class="success-icon-badge">
+          <i data-lucide="check-circle-2"></i>
+        </div>
+        <h2>Complaint Registered Successfully!</h2>
+        <p class="modal-subtitle">Your service ticket has been routed to Royal Eye Solar Power's central dispatch desk.</p>
+
+        <div class="ticket-receipt-card">
+          <div class="receipt-header">
+            <span>SERVICE TICKET ID</span>
+            <strong id="receipt-ticket-id">REX-2026-0001</strong>
+          </div>
+          <div class="receipt-body">
+            <div class="receipt-row">
+              <span>Customer Name:</span>
+              <strong id="receipt-cust-name">-</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Equipment:</span>
+              <strong id="receipt-product">-</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Priority:</span>
+              <span id="receipt-priority" class="badge-priority">Normal</span>
+            </div>
+            <div class="receipt-row">
+              <span>Location:</span>
+              <span id="receipt-location">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions-grid">
+          <button class="btn-secondary" onclick="app.viewTicketInTracker()">
+            <i data-lucide="eye"></i> Track Status Now
+          </button>
+          <a id="btn-whatsapp-ticket" href="#" target="_blank" class="btn-whatsapp">
+            <i data-lucide="message-circle"></i> Send to WhatsApp
+          </a>
+          <button class="btn-primary" onclick="app.closeSuccessModal()">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ============================================================ -->
+  <!-- VIEW 2: TICKET TRACKER                                      -->
+  <!-- ============================================================ -->
+  <section id="view-tracker" class="app-view">
+    <div class="container tracker-container">
+      <div class="section-title-wrap">
+        <h2 class="section-title">Track Your <span class="highlight-red">Solar Service Status</span></h2>
+        <p class="section-subtitle">Track status using the last 5 digits of your KSEB Bill Consumer Number &amp; Branch, or by Ticket ID</p>
+      </div>
+
+      <div class="tracker-search-box glass-panel">
+        <!-- Dual Mode Switcher Tabs -->
+        <div class="tracker-mode-nav">
+          <button type="button" class="tracker-mode-btn active" id="btn-mode-kseb" onclick="app.setTrackerMode('kseb')">
+            <i data-lucide="zap"></i>
+            <span>Track with KSEB Bill (Last 5 Digits + Branch)</span>
+          </button>
+          <button type="button" class="tracker-mode-btn" id="btn-mode-ticket" onclick="app.setTrackerMode('ticket')">
+            <i data-lucide="ticket"></i>
+            <span>Track with Ticket ID / Mobile</span>
+          </button>
+        </div>
+
+        <!-- Mode 1: KSEB Bill Tracker (Primary) -->
+        <form id="form-kseb-tracker" onsubmit="app.handleKsebTrackerSearch(event)" class="tracker-kseb-form">
+          <div class="tracker-kseb-grid">
+            <div class="tracker-input-wrap">
+              <i data-lucide="hash"></i>
+              <input type="text" id="tracker-kseb-consumer" placeholder="Last 5 digits of KSEB Consumer No. (e.g. 48291)" maxlength="13" required autocomplete="off">
+            </div>
+            <div class="tracker-input-wrap">
+              <i data-lucide="map-pin"></i>
+              <input type="text" id="tracker-kseb-branch" list="kseb-branches-list" placeholder="Select or type KSEB Branch (e.g. Fort, Kaipamangalam)..." required autocomplete="off">
+            </div>
+            <button type="submit" class="btn-primary" style="padding: 14px 22px; white-space: nowrap;">
+              <i data-lucide="search"></i> Track Status
+            </button>
+          </div>
+          <div class="tracker-hint-text">
+            <i data-lucide="info"></i>
+            <span>Enter the last 5 digits from your KSEB electric bill (or full consumer number) and choose your electrical section.</span>
+          </div>
+        </form>
+
+        <!-- Mode 2: Ticket ID or Phone Tracker (Alternative) -->
+        <form id="form-standard-tracker" onsubmit="app.handleTrackerSearch(event)" class="tracker-form" style="display: none;">
+          <div class="tracker-input-wrap">
+            <i data-lucide="search"></i>
+            <input type="text" id="tracker-query" placeholder="Enter Ticket ID (e.g. REX-2026-1002) or 10-digit Phone number...">
+          </div>
+          <button type="submit" class="btn-primary" style="padding: 14px 22px; white-space: nowrap;">
+            <i data-lucide="arrow-right"></i> Track
+          </button>
+        </form>
+      </div>
+
+      <!-- Tracker Results Container -->
+      <div id="tracker-result-area" class="tracker-results-area">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Staff Helpdesk Dashboard moved to admin.html (password protected, staff only) -->
+
+
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand" id="footer-brand-text">
+        <strong>Royal Eye Solar Power (REX)</strong> &bull; Edamuttam, Thrissur, Kerala - 680568
+      </div>
+      <div class="footer-helpline" id="footer-helpline-text">
+        Toll-Free Support Lines: <strong>+91 80758 73679</strong> | <strong>+91 90745 72600</strong>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 Royal Eye Solar Power. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Master KSEB Electrical Sections & Branches List -->
+  <datalist id="kseb-branches-list"></datalist>
+  <script src="config.js"></script>
+  <script src="kseb_branches.js"></script>
+
+  <!-- Main JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>

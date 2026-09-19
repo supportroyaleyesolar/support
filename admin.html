@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REX Staff Helpdesk | Royal Eye Solar Power</title>
+  <!-- No description meta — exclude from search engines -->
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── ADMIN LOGIN OVERLAY ── */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(229,30,43,0.12) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 70%, rgba(245,158,11,0.07) 0%, transparent 50%),
+                  #080b12;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #login-overlay.hidden { display: none; }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(16, 21, 33, 0.95);
+      border: 1px solid rgba(229,30,43,0.25);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 40px rgba(229,30,43,0.12);
+      animation: fadeIn 0.4s ease;
+      text-align: center;
+    }
+
+    .login-brand {
+      margin-bottom: 28px;
+    }
+    .login-rex {
+      display: inline-block;
+      background: linear-gradient(135deg, #e51e2b 0%, #9e0e18 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 2rem;
+      letter-spacing: 0.12em;
+      padding: 10px 22px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(229,30,43,0.4);
+    }
+    .login-company-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .login-company-name span { color: #e51e2b; }
+
+    .login-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      letter-spacing: 0.08em;
+    }
+    .login-badge i { width: 14px; height: 14px; color: #f59e0b; }
+
+    .login-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .login-card p {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+
+    .login-input-group {
+      position: relative;
+      margin-bottom: 14px;
+    }
+    .login-input-group i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: #475569;
+    }
+    .login-input-group input {
+      width: 100%;
+      padding: 13px 14px 13px 44px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .login-input-group input:focus {
+      outline: none;
+      border-color: #e51e2b;
+      box-shadow: 0 0 0 3px rgba(229,30,43,0.18);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #e51e2b 0%, #b01018 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      box-shadow: 0 4px 16px rgba(229,30,43,0.4);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-login:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(229,30,43,0.5);
+    }
+    .btn-login i { width: 18px; height: 18px; }
+
+    .login-error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      display: none;
+    }
+    .login-error.visible { display: block; }
+
+    .login-hint {
+      margin-top: 20px;
+      font-size: 0.78rem;
+      color: #334155;
+    }
+
+    /* ── ADMIN APP SHELL ── */
+    #admin-app { display: none; }
+    #admin-app.visible { display: block; }
+
+    /* Admin Header */
+    .admin-header {
+      background: rgba(8, 11, 18, 0.97);
+      border-bottom: 1px solid rgba(229,30,43,0.2);
+      padding: 14px 0;
+      position: sticky;
+      top: 0;
+      z-index: 80;
+    }
+    .admin-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .admin-rex-badge {
+      background: linear-gradient(135deg, #e51e2b 0%, #990f19 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 3px 10px rgba(229,30,43,0.35);
+    }
+    .admin-brand-text strong {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .admin-brand-text span { color: #e51e2b; }
+    .admin-brand-sub {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #f59e0b;
+    }
+
+    .admin-staff-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .staff-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+    .staff-chip i { width: 14px; height: 14px; color: #10b981; }
+    #staff-user-name { color: #fff; font-weight: 700; }
+
+    .btn-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #ef4444;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-logout:hover {
+      background: rgba(239,68,68,0.2);
+    }
+    .btn-logout i { width: 15px; height: 15px; }
+
+    .btn-action-delete {
+      background: rgba(239, 68, 68, 0.1) !important;
+      border-color: rgba(239, 68, 68, 0.3) !important;
+      color: #ef4444 !important;
+    }
+    .btn-action-delete:hover {
+      background: #ef4444 !important;
+      border-color: #ef4444 !important;
+      color: #fff !important;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
+    }
+
+    .form-actions-right {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <!-- ============================================================ -->
+  <!-- LOGIN OVERLAY                                                 -->
+  <!-- ============================================================ -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-rex">REX</div>
+        <div class="login-company-name">Royal Eye <span>Solar Power</span></div>
+      </div>
+
+      <div class="login-badge">
+        <i data-lucide="shield-alert"></i>
+        STAFF ACCESS ONLY — RESTRICTED AREA
+      </div>
+
+      <h2>Helpdesk Sign In</h2>
+      <p>This portal is for Royal Eye Solar Power customer service staff and technician coordinators only. Unauthorized access is prohibited.</p>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="login-input-group">
+          <i data-lucide="user-circle-2"></i>
+          <input type="text" id="login-username" placeholder="Staff Username" autocomplete="username" required>
+        </div>
+        <div class="login-input-group">
+          <i data-lucide="lock"></i>
+          <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn-login">
+          <i data-lucide="log-in"></i>
+          Sign In to Helpdesk
+        </button>
+        <div class="login-error" id="login-error">
+          Incorrect username or password. Please try again.
+        </div>
+      </form>
+
+      <div class="login-hint">
+        If you are a customer looking to register a complaint or track your service,<br>
+        please visit the <a href="index.html" style="color: #e51e2b; font-weight: 600;">Customer Portal →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ADMIN APP (Shown after successful login)                      -->
+  <!-- ============================================================ -->
+  <div id="admin-app">
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="container admin-header-inner">
+        <div class="admin-brand">
+          <div class="admin-rex-badge">REX</div>
+          <div>
+            <div class="admin-brand-text">
+              <strong>Royal Eye <span>Solar Power</span></strong>
+            </div>
+            <div class="admin-brand-sub">STAFF HELPDESK DASHBOARD</div>
+          </div>
+        </div>
+
+        <div class="admin-staff-info">
+          <div class="staff-chip">
+            <i data-lucide="shield-check"></i>
+            Logged in as: <span id="staff-user-name">—</span>
+          </div>
+          <a href="settings.html" class="btn-secondary" style="text-decoration:none;" title="Website & Team Settings">
+            <i data-lucide="settings"></i> Settings
+          </a>
+          <button class="btn-logout" onclick="handleLogout()">
+            <i data-lucide="log-out"></i> Sign Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Operations Bar -->
+    <div class="admin-topbar">
+      <div class="container admin-topbar-inner">
+        <div>
+          <h1 class="admin-headline">Toll-Free Helpdesk &amp; Service Operations</h1>
+          <p class="admin-subtext">Live complaints feed, technician dispatch, and ticket life-cycle management</p>
+        </div>
+        <div class="admin-actions">
+          <button class="btn-secondary" onclick="openManualTicketModal()">
+            <i data-lucide="phone-incoming"></i> Log Toll-Free Call
+          </button>
+          <button class="btn-secondary" onclick="exportTicketsCSV()">
+            <i data-lucide="download"></i> Export CSV
+          </button>
+          <button class="btn-refresh" onclick="refreshAdminDashboard()" title="Refresh Data">
+            <i data-lucide="refresh-cw"></i>
+          </button>
+          <a href="index.html" class="btn-secondary" target="_blank" title="View Customer Portal">
+            <i data-lucide="external-link"></i> Customer Portal
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container admin-dashboard-content">
+
+      <!-- KPI Stats Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card" onclick="setFilterStatus('ALL')">
+          <div class="kpi-icon-wrap blue"><i data-lucide="inbox"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-total">0</div>
+            <div class="kpi-label">Total Complaints</div>
+          </div>
+        </div>
+        <div class="kpi-card highlight-kpi" onclick="setFilterStatus('Open')">
+          <div class="kpi-icon-wrap red"><i data-lucide="alert-circle"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-open">0</div>
+            <div class="kpi-label">Open / New Tickets</div>
+          </div>
+        </div>
+        <div class="kpi-card" onclick="setFilterStatus('Assigned')">
+          <div class="kpi-icon-wrap amber"><i data-lucide="user-check"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-assigned">0</div>
+            <div class="kpi-label">Technician Assigned</div>
+          </div>
+        </div>
+        <div class="kpi-card" onclick="setFilterStatus('In Progress')">
+          <div class="kpi-icon-wrap purple"><i data-lucide="wrench"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-progress">0</div>
+            <div class="kpi-label">Field Visit In-Progress</div>
+          </div>
+        </div>
+        <div class="kpi-card" onclick="setFilterStatus('Resolved')">
+          <div class="kpi-icon-wrap green"><i data-lucide="check-circle-2"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-resolved">0</div>
+            <div class="kpi-label">Resolved / Closed</div>
+          </div>
+        </div>
+        <div class="kpi-card emergency-kpi" onclick="setFilterPriority('Emergency')">
+          <div class="kpi-icon-wrap red-pulse"><i data-lucide="siren"></i></div>
+          <div>
+            <div class="kpi-value" id="kpi-emergency">0</div>
+            <div class="kpi-label">Emergency Outages</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="admin-toolbar glass-panel">
+        <div class="search-filter-wrap">
+          <div class="admin-search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="admin-search-input" placeholder="Search customer name, phone, ticket ID, location..." oninput="renderAdminTickets()">
+          </div>
+          <div class="dropdown-filters">
+            <select id="filter-product" class="admin-select" onchange="renderAdminTickets()">
+              <option value="ALL">All Products</option>
+              <option value="Inverters">Inverters</option>
+              <option value="Battery">Tubular Battery</option>
+              <option value="Lithium Battery">Lithium Battery</option>
+              <option value="Solar Service">Solar Service</option>
+              <option value="Solar Water Service">Solar Water Service</option>
+              <option value="Water Heater">Water Heater</option>
+            </select>
+            <select id="filter-status" class="admin-select" onchange="renderAdminTickets()">
+              <option value="ALL">All Statuses</option>
+              <option value="Open">Open</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+            <select id="filter-priority" class="admin-select" onchange="renderAdminTickets()">
+              <option value="ALL">All Priorities</option>
+              <option value="Emergency">Emergency</option>
+              <option value="High">High</option>
+              <option value="Normal">Normal</option>
+            </select>
+            <button class="btn-clear-filters" onclick="resetAdminFilters()">Reset</button>
+            <button class="btn-clear-filters" style="color:#ef4444;border-color:rgba(239,68,68,0.35);margin-left:4px;" onclick="openDeleteAllModal('resolved')" title="Delete all resolved tickets">
+              <i data-lucide="check-check" style="width:13px;height:13px;vertical-align:-2px;"></i> Clear Resolved
+            </button>
+            <button class="btn-clear-filters" style="color:#ef4444;border-color:rgba(239,68,68,0.35);" onclick="openDeleteAllModal('all')" title="Delete all customer complaint data">
+              <i data-lucide="trash-2" style="width:13px;height:13px;vertical-align:-2px;"></i> Clear All Complaints
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tickets Table -->
+      <div class="table-container glass-panel">
+        <table class="tickets-table" id="tickets-table">
+          <thead>
+            <tr>
+              <th>Ticket ID</th>
+              <th>Date / Time</th>
+              <th>Customer &amp; Contact</th>
+              <th>Equipment / Service</th>
+              <th>Issue Summary</th>
+              <th>Priority</th>
+              <th>Assigned Engineer</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tickets-tbody"></tbody>
+        </table>
+        <div id="empty-state" class="empty-state hidden">
+          <i data-lucide="inbox"></i>
+          <p>No complaints match your filter criteria.</p>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="admin-analytics-grid">
+        <div class="analytics-card glass-panel">
+          <h3>Complaints by Product Line</h3>
+          <p class="card-subtitle">Real-time service request distribution</p>
+          <div class="product-breakdown-list" id="product-breakdown-container"></div>
+        </div>
+        <div class="analytics-card glass-panel">
+          <h3>Field Service Technicians</h3>
+          <p class="card-subtitle">Certified Royal Eye Solar Power engineers — Thrissur &amp; Nearby</p>
+          <div class="technician-list" id="technician-list-container"></div>
+        </div>
+      </div>
+
+    </div><!-- /container -->
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <strong>Royal Eye Solar Power (REX) — Staff Helpdesk</strong> &bull; Edamuttam, Thrissur, Kerala - 680568
+        </div>
+        <div class="footer-helpline">
+          Central Dispatch: <strong>+91 80758 73679</strong> | <strong>+91 90745 72600</strong>
+        </div>
+        <div class="footer-copy">&copy; 2026 Royal Eye Solar Power. Restricted — Staff Use Only.</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: LOG TOLL-FREE CALL                                     -->
+  <!-- ============================================================ -->
+  <div id="manual-ticket-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-wide glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i data-lucide="phone-call"></i>
+          <h3>Log Incoming Toll-Free Phone Call</h3>
+        </div>
+        <button class="modal-close" onclick="closeManualTicketModal()">&times;</button>
+      </div>
+      <form onsubmit="handleManualTicketSubmit(event)">
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label>Caller Full Name *</label>
+            <input type="text" id="manual-name" class="form-control" required placeholder="Customer name">
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="manual-phone" class="form-control" required placeholder="10-digit number">
+          </div>
+          <div class="form-group">
+            <label>Helpline Number Called</label>
+            <select id="manual-helpline" class="form-control">
+              <option value="+91 80758 73679">+91 80758 73679 (Enquiry &amp; Service)</option>
+              <option value="+91 90745 72600">+91 90745 72600 (Technical Support &amp; Customer Care)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label>Product / Equipment *</label>
+            <select id="manual-product" class="form-control" required>
+              <option value="Inverters">Inverters</option>
+              <option value="Battery">Tubular Battery</option>
+              <option value="Lithium Battery">Lithium Battery (REX)</option>
+              <option value="Solar Service">Solar Service</option>
+              <option value="Solar Water Service">Solar Water Service</option>
+              <option value="Water Heater">Water Heater</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="manual-priority" class="form-control">
+              <option value="Normal">Normal</option>
+              <option value="High">High</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Location / City *</label>
+            <input type="text" id="manual-location" class="form-control" placeholder="e.g., Kodungallur, Thrissur" required>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>KSEB Consumer No. (Last 5 Digits or Full)</label>
+            <input type="text" id="manual-kseb-consumer" class="form-control" placeholder="e.g. 48291 or 1155330048291" maxlength="13">
+          </div>
+          <div class="form-group">
+            <label>KSEB Electrical Section / Branch</label>
+            <input type="text" id="manual-kseb-branch" list="kseb-branches-list" class="form-control" placeholder="Choose or type KSEB branch...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Problem Summary (As reported by caller) *</label>
+          <textarea id="manual-issue" class="form-control" rows="3" placeholder="Caller says inverter not starting, battery not holding charge..." required></textarea>
+        </div>
+        <div class="form-actions-right">
+          <button type="button" class="btn-secondary" onclick="closeManualTicketModal()">Cancel</button>
+          <button type="submit" class="btn-primary">
+            <i data-lucide="plus-circle"></i> Create Service Ticket
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: TICKET DETAIL & DISPATCH                               -->
+  <!-- ============================================================ -->
+  <div id="ticket-detail-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-wide glass-panel" id="ticket-detail-card"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: DELETE CONFIRMATION                                    -->
+  <!-- ============================================================ -->
+  <div id="delete-confirm-modal" class="modal-backdrop hidden" style="z-index: 9999;">
+    <div class="modal-card glass-panel" style="max-width: 440px; text-align: center; padding: 30px 24px; animation: fadeIn 0.25s ease;">
+      <div style="width: 54px; height: 54px; border-radius: 50%; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #ef4444;">
+        <i data-lucide="trash-2" style="width: 26px; height: 26px;"></i>
+      </div>
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 8px;" id="delete-modal-title">Delete Customer Complaint</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;" id="delete-modal-desc">Are you sure you want to permanently remove this service record? This action cannot be undone.</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button type="button" class="btn-secondary" onclick="closeDeleteModal()" style="padding: 10px 20px;">Cancel</button>
+        <button type="button" class="btn-primary" id="btn-confirm-delete" onclick="executeDeleteAction()" style="background: #ef4444; border-color: #ef4444; padding: 10px 20px; box-shadow: 0 4px 14px rgba(239,68,68,0.4);">
+          <i data-lucide="trash-2"></i> Permanently Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Job Card Container -->
+  <div id="printable-job-card" class="printable-job-card hidden"></div>
+
+  <!-- Master KSEB Electrical Sections & Branches List -->
+  <datalist id="kseb-branches-list"></datalist>
+  <script src="config.js"></script>
+  <script src="kseb_branches.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

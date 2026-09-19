@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REX Settings Manager | Royal Eye Solar Power</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── LOGIN OVERLAY (reused from admin) ── */
+    #login-overlay {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(229,30,43,0.12) 0%, transparent 55%),
+                  radial-gradient(ellipse at 80% 70%, rgba(245,158,11,0.07) 0%, transparent 50%), #080b12;
+      z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    #login-overlay.hidden { display: none; }
+    .login-card {
+      width: 100%; max-width: 420px;
+      background: rgba(16,21,33,0.95);
+      border: 1px solid rgba(229,30,43,0.25); border-radius: 20px;
+      padding: 40px 36px; box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 40px rgba(229,30,43,0.12);
+      animation: fadeIn 0.4s ease; text-align: center;
+    }
+    .login-rex { display: inline-block; background: linear-gradient(135deg,#e51e2b 0%,#9e0e18 100%); color:#fff; font-family:'Outfit',sans-serif; font-weight:900; font-size:2rem; letter-spacing:0.12em; padding:10px 22px; border-radius:10px; margin-bottom:12px; box-shadow:0 6px 20px rgba(229,30,43,0.4); }
+    .login-company-name { font-family:'Outfit',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; margin-bottom:4px; }
+    .login-company-name span { color:#e51e2b; }
+    .login-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#94a3b8; font-size:0.78rem; font-weight:700; padding:5px 12px; border-radius:20px; margin-bottom:24px; letter-spacing:0.08em; }
+    .login-badge i { width:14px; height:14px; color:#f59e0b; }
+    .login-card h2 { font-size:1.4rem; margin-bottom:6px; color:#fff; }
+    .login-card > p { font-size:0.85rem; color:#64748b; margin-bottom:24px; }
+    .login-input-group { position:relative; margin-bottom:14px; }
+    .login-input-group i { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:18px; height:18px; color:#475569; }
+    .login-input-group input { width:100%; padding:13px 14px 13px 44px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:10px; color:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; transition:border-color 0.2s; }
+    .login-input-group input:focus { outline:none; border-color:#e51e2b; box-shadow:0 0 0 3px rgba(229,30,43,0.18); }
+    .btn-login { width:100%; padding:13px; background:linear-gradient(135deg,#e51e2b 0%,#b01018 100%); color:#fff; border:none; border-radius:10px; font-family:'Plus Jakarta Sans',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; margin-top:6px; box-shadow:0 4px 16px rgba(229,30,43,0.4); transition:all 0.2s ease; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-login:hover { transform:translateY(-1px); box-shadow:0 6px 22px rgba(229,30,43,0.5); }
+    .btn-login i { width:18px; height:18px; }
+    .login-error { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ef4444; padding:10px 14px; border-radius:8px; font-size:0.85rem; margin-top:12px; display:none; }
+    .login-error.visible { display:block; }
+    .login-hint { margin-top:18px; font-size:0.76rem; color:#334155; }
+
+    /* ── SETTINGS APP SHELL ── */
+    #settings-app { display: none; }
+    #settings-app.visible { display: block; }
+
+    /* Settings Header */
+    .settings-header {
+      background: rgba(8,11,18,0.97);
+      border-bottom: 1px solid rgba(229,30,43,0.2);
+      padding: 14px 0;
+      position: sticky; top: 0; z-index: 80;
+    }
+    .settings-header-inner {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .settings-brand { display: flex; align-items: center; gap: 12px; }
+    .settings-rex-badge {
+      background: linear-gradient(135deg,#e51e2b 0%,#990f19 100%);
+      color: #fff; font-family: 'Outfit', sans-serif; font-weight: 900;
+      font-size: 1rem; letter-spacing: 0.08em; padding: 5px 10px;
+      border-radius: 7px; box-shadow: 0 3px 10px rgba(229,30,43,0.35);
+    }
+    .settings-brand-text strong { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .settings-brand-text span { color: #e51e2b; }
+    .settings-brand-sub { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; color: #f59e0b; }
+    .header-nav-btns { display: flex; align-items: center; gap: 10px; }
+
+    .btn-logout { display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ef4444; padding:7px 14px; border-radius:8px; font-size:0.82rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; }
+    .btn-logout:hover { background:rgba(239,68,68,0.2); }
+    .btn-logout i { width:15px; height:15px; }
+
+    /* ── SETTINGS LAYOUT ── */
+    .settings-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* Sidebar Nav */
+    .settings-sidebar {
+      background: rgba(10,13,20,0.9);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      padding: 24px 0;
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    .sidebar-section-label {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+      color: #475569; text-transform: uppercase;
+      padding: 0 20px 8px; margin-top: 16px;
+    }
+    .sidebar-nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; margin: 2px 8px;
+      border-radius: 8px;
+      color: #64748b; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .sidebar-nav-item i { width: 17px; height: 17px; }
+    .sidebar-nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .sidebar-nav-item.active {
+      color: #fff; background: rgba(229,30,43,0.12);
+      border-color: rgba(229,30,43,0.3);
+    }
+    .sidebar-nav-item.active i { color: #e51e2b; }
+
+    /* Settings Main Content */
+    .settings-content {
+      padding: 32px 36px;
+      background: var(--bg-main);
+      overflow-y: auto;
+    }
+
+    .settings-panel { display: none; }
+    .settings-panel.active { display: block; animation: fadeIn 0.25s ease; }
+
+    .panel-header {
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .panel-header h2 { font-size: 1.7rem; margin-bottom: 4px; }
+    .panel-header p { color: var(--text-muted); font-size: 0.9rem; }
+
+    /* Settings Cards */
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .settings-card-title {
+      font-size: 1rem; font-weight: 700; color: #fff;
+      margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+    }
+    .settings-card-title i { width: 18px; height: 18px; color: #e51e2b; }
+    .settings-card-sub { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 18px; }
+
+    /* Form styling */
+    .sform-group { margin-bottom: 16px; }
+    .sform-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .sform-input, .sform-textarea, .sform-select {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border-subtle);
+      color: #fff; padding: 10px 14px; border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+    .sform-input:focus, .sform-textarea:focus, .sform-select:focus {
+      outline: none; border-color: #e51e2b; box-shadow: 0 0 0 3px rgba(229,30,43,0.18);
+    }
+    .sform-select option { background: #121722; }
+    .sform-textarea { resize: vertical; min-height: 80px; }
+    .sform-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sform-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    /* Helpline phone input rows */
+    .helpline-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .helpline-row input { flex: 1; }
+    .btn-remove { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+    .btn-remove:hover { background: rgba(239,68,68,0.25); }
+    .btn-remove i { width: 16px; height: 16px; }
+
+    .btn-add-row {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.15);
+      color: var(--text-muted); padding: 7px 14px; border-radius: 8px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      width: 100%; justify-content: center; margin-top: 6px;
+    }
+    .btn-add-row:hover { border-color: #e51e2b; color: #fff; }
+    .btn-add-row i { width: 15px; height: 15px; }
+
+    /* Tag Pills (Partners) */
+    .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .tag-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      color: #cbd5e1; padding: 5px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 600;
+    }
+    .tag-pill button { background: none; border: none; color: #94a3b8; cursor: pointer; line-height: 1; padding: 0 2px; font-size: 1rem; }
+    .tag-pill button:hover { color: #ef4444; }
+    .tag-add-row { display: flex; gap: 8px; }
+    .tag-add-row input { flex: 1; }
+
+    /* Metric Cards */
+    .metric-edit-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+
+    /* Team / Staff Table */
+    .team-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .team-table th { background: rgba(0,0,0,0.3); padding: 10px 14px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; border-bottom: 1px solid var(--border-subtle); text-align: left; }
+    .team-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+    .team-table tr:hover { background: rgba(255,255,255,0.02); }
+    .team-table input, .team-table select { background: var(--bg-input); border: 1px solid var(--border-subtle); color: #fff; padding: 6px 10px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; width: 100%; }
+    .team-table input:focus, .team-table select:focus { outline: none; border-color: #e51e2b; }
+    .team-table select option { background: #121722; }
+
+    .status-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 20px; font-size: 0.76rem; font-weight: 700; cursor: pointer; border: none;
+      transition: all 0.2s;
+    }
+    .status-available { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .status-busy { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+
+    /* Product Issues Editor */
+    .product-tab-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .product-tab-btn {
+      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border-subtle);
+      background: var(--bg-surface); color: var(--text-secondary); font-size: 0.83rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .product-tab-btn.active { background: rgba(229,30,43,0.15); border-color: rgba(229,30,43,0.4); color: #fff; }
+
+    .issue-list { display: flex; flex-direction: column; gap: 8px; }
+    .issue-row { display: flex; gap: 8px; align-items: center; }
+    .issue-row input { flex: 1; }
+
+    /* Staff Accounts Table */
+    .staff-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .staff-table th { background: rgba(0,0,0,0.3); padding: 10px 14px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; border-bottom: 1px solid var(--border-subtle); text-align: left; }
+    .staff-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .staff-table input { background: var(--bg-input); border: 1px solid var(--border-subtle); color: #fff; padding: 6px 10px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; width: 100%; }
+    .staff-table input:focus { outline: none; border-color: #e51e2b; }
+    .role-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .role-superadmin { background:rgba(229,30,43,0.15); color:#e51e2b; border:1px solid rgba(229,30,43,0.3); }
+    .role-staff { background:rgba(59,130,246,0.12); color:#60a5fa; border:1px solid rgba(59,130,246,0.25); }
+    .role-supervisor { background:rgba(139,92,246,0.12); color:#a78bfa; border:1px solid rgba(139,92,246,0.25); }
+
+    /* Save Bar */
+    .save-bar {
+      position: fixed; bottom: 0; left: 240px; right: 0;
+      background: rgba(10,13,20,0.97);
+      border-top: 1px solid var(--border-subtle);
+      padding: 14px 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 70;
+      backdrop-filter: blur(10px);
+    }
+    .save-bar-hint { font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .save-bar-hint i { width: 16px; height: 16px; color: #f59e0b; }
+    .save-bar-actions { display: flex; gap: 10px; }
+
+    .btn-preview { display:inline-flex; align-items:center; gap:6px; background:var(--bg-surface); border:1px solid var(--border-subtle); color:var(--text-primary); padding:9px 18px; border-radius:8px; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; }
+    .btn-preview:hover { background:var(--bg-card-hover); color:#fff; }
+    .btn-preview i { width:16px; height:16px; }
+
+    @media (max-width: 900px) {
+      .settings-layout { grid-template-columns: 1fr; }
+      .settings-sidebar { position: static; height: auto; }
+      .save-bar { left: 0; }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay">
+    <div class="login-card">
+      <div><div class="login-rex">REX</div></div>
+      <div class="login-company-name">Royal Eye <span>Solar Power</span></div>
+      <div class="login-badge"><i data-lucide="settings"></i> SETTINGS MANAGER — RESTRICTED</div>
+      <h2>Admin Sign In</h2>
+      <p>Enter your staff credentials to access the Website & Team Settings Manager.</p>
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="login-input-group">
+          <i data-lucide="user-circle-2"></i>
+          <input type="text" id="login-username" placeholder="Staff Username" required autocomplete="username">
+        </div>
+        <div class="login-input-group">
+          <i data-lucide="lock"></i>
+          <input type="password" id="login-password" placeholder="Password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login"><i data-lucide="log-in"></i> Sign In</button>
+        <div class="login-error" id="login-error">Incorrect username or password. Try again.</div>
+      </form>
+      <div class="login-hint">
+        Go to <a href="admin.html" style="color:#e51e2b;font-weight:600;">Helpdesk Dashboard</a> &nbsp;|&nbsp;
+        <a href="index.html" style="color:#e51e2b;font-weight:600;">Customer Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS APP -->
+  <div id="settings-app">
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Header -->
+    <header class="settings-header">
+      <div class="container settings-header-inner">
+        <div class="settings-brand">
+          <div class="settings-rex-badge">REX</div>
+          <div>
+            <div class="settings-brand-text"><strong>Royal Eye <span>Solar Power</span></strong></div>
+            <div class="settings-brand-sub">WEBSITE &amp; TEAM SETTINGS MANAGER</div>
+          </div>
+        </div>
+        <div class="header-nav-btns">
+          <a href="index.html" target="_blank" class="btn-preview">
+            <i data-lucide="eye"></i> Preview Customer Portal
+          </a>
+          <a href="admin.html" class="btn-secondary" style="text-decoration:none;">
+            <i data-lucide="layout-dashboard"></i> Helpdesk
+          </a>
+          <button class="btn-logout" onclick="handleLogout()">
+            <i data-lucide="log-out"></i> Sign Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="settings-layout">
+
+      <!-- Sidebar -->
+      <aside class="settings-sidebar">
+        <div class="sidebar-section-label">Website Content</div>
+        <div class="sidebar-nav-item active" onclick="showPanel('company')" id="nav-company">
+          <i data-lucide="building-2"></i> Company Info
+        </div>
+        <div class="sidebar-nav-item" onclick="showPanel('hero')" id="nav-hero">
+          <i data-lucide="layout"></i> Hero Banner
+        </div>
+        <div class="sidebar-nav-item" onclick="showPanel('partners')" id="nav-partners">
+          <i data-lucide="handshake"></i> Partner Brands
+        </div>
+        <div class="sidebar-nav-item" onclick="showPanel('products')" id="nav-products">
+          <i data-lucide="box"></i> Products &amp; Services
+        </div>
+
+        <div class="sidebar-section-label">Support Team</div>
+        <div class="sidebar-nav-item" onclick="showPanel('technicians')" id="nav-technicians">
+          <i data-lucide="hard-hat"></i> Field Technicians
+        </div>
+        <div class="sidebar-nav-item" onclick="showPanel('staff')" id="nav-staff">
+          <i data-lucide="users"></i> Staff Accounts
+        </div>
+
+        <div class="sidebar-section-label">System</div>
+        <div class="sidebar-nav-item" onclick="showPanel('reset')" id="nav-reset">
+          <i data-lucide="refresh-ccw"></i> Reset to Default
+        </div>
+      </aside>
+
+      <!-- Content Panels -->
+      <main class="settings-content" style="padding-bottom: 80px;">
+
+        <!-- ── PANEL: COMPANY INFO ── -->
+        <div class="settings-panel active" id="panel-company">
+          <div class="panel-header">
+            <h2>Company Information</h2>
+            <p>Edit your company name, address, contact numbers, and branding details. Changes will reflect on the customer portal immediately after saving.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="badge"></i> Brand Identity</div>
+            <div class="settings-card-sub">Company name, taglines, and brand identifiers</div>
+            <div class="sform-grid-2">
+              <div class="sform-group">
+                <label>Company Full Name</label>
+                <input type="text" class="sform-input" id="co-name" placeholder="e.g. Royal Eye Solar Power">
+              </div>
+              <div class="sform-group">
+                <label>Brand Short Name (REX Badge)</label>
+                <input type="text" class="sform-input" id="co-rex" placeholder="e.g. REX">
+              </div>
+            </div>
+            <div class="sform-group">
+              <label>Primary Tagline</label>
+              <input type="text" class="sform-input" id="co-tagline" placeholder="e.g. Powering Your Future With The Sun">
+            </div>
+            <div class="sform-group">
+              <label>Secondary Tagline / Footer Line</label>
+              <input type="text" class="sform-input" id="co-sub-tagline" placeholder="e.g. Cleaner Today, A Brighter Tomorrow">
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="map-pin"></i> Address &amp; Location</div>
+            <div class="settings-card-sub">Displayed on the customer portal header and footer</div>
+            <div class="sform-group">
+              <label>Full Address (as shown to customers)</label>
+              <input type="text" class="sform-input" id="co-address" placeholder="e.g. Edamuttam, Thrissur, Kerala - 680568">
+            </div>
+            <div class="sform-grid-2">
+              <div class="sform-group">
+                <label>City / District</label>
+                <input type="text" class="sform-input" id="co-city" placeholder="e.g. Thrissur">
+              </div>
+              <div class="sform-group">
+                <label>Working Hours (displayed to customers)</label>
+                <input type="text" class="sform-input" id="co-hours" placeholder="e.g. 24/7 Support Available">
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="phone"></i> Helpline &amp; Contact Numbers</div>
+            <div class="settings-card-sub">All toll-free/support phone numbers displayed in the portal header and hero section</div>
+            <div id="helplines-container"></div>
+            <button class="btn-add-row" onclick="addHelplineRow()">
+              <i data-lucide="plus-circle"></i> Add Another Helpline Number
+            </button>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="message-circle"></i> WhatsApp &amp; Email</div>
+            <div class="settings-card-sub">Used for WhatsApp quick-chat links and contact email</div>
+            <div class="sform-grid-2">
+              <div class="sform-group">
+                <label>WhatsApp Number (with country code, no +)</label>
+                <input type="text" class="sform-input" id="co-whatsapp" placeholder="e.g. 918075873679">
+              </div>
+              <div class="sform-group">
+                <label>Support Email (optional)</label>
+                <input type="email" class="sform-input" id="co-email" placeholder="e.g. support@royaleyesolar.in">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: HERO BANNER ── -->
+        <div class="settings-panel" id="panel-hero">
+          <div class="panel-header">
+            <h2>Hero Banner</h2>
+            <p>Edit the main heading, description text, and key metric cards shown on the customer portal homepage.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="type"></i> Main Heading &amp; Description</div>
+            <div class="settings-card-sub">The first thing customers see on the portal</div>
+            <div class="sform-group">
+              <label>Hero Main Heading</label>
+              <input type="text" class="sform-input" id="hero-heading" placeholder="e.g. Register Your Service Complaint Or Maintenance Request">
+            </div>
+            <div class="sform-group">
+              <label>Hero Sub-description (1–2 sentences)</label>
+              <textarea class="sform-textarea" id="hero-desc" rows="3" placeholder="Quick resolution for Inverters, REX Lithium Batteries..."></textarea>
+            </div>
+            <div class="sform-group">
+              <label>Authorized Service Badge Text</label>
+              <input type="text" class="sform-input" id="hero-badge" placeholder="e.g. Authorized Service & Warranty Support">
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="bar-chart-2"></i> Key Metrics / Stats Cards</div>
+            <div class="settings-card-sub">The 3 highlight stats shown below the hero description</div>
+            <div id="metrics-container"></div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: PARTNER BRANDS ── -->
+        <div class="settings-panel" id="panel-partners">
+          <div class="panel-header">
+            <h2>Partner Brands</h2>
+            <p>Manage the authorized partner brand tags displayed in the "Authorized Service &amp; Partner Systems" strip on the customer portal.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="award"></i> Partner Brand Tags</div>
+            <div class="settings-card-sub">Click the × on any tag to remove it. Add new brands below.</div>
+            <div class="tags-container" id="partners-tags-container"></div>
+            <div class="tag-add-row">
+              <input type="text" class="sform-input" id="new-partner-input" placeholder="Type brand name and press Add..." onkeydown="if(event.key==='Enter'){event.preventDefault();addPartnerTag();}">
+              <button class="btn-primary" onclick="addPartnerTag()" style="white-space:nowrap;">
+                <i data-lucide="plus"></i> Add Brand
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: PRODUCTS & SERVICES ── -->
+        <div class="settings-panel" id="panel-products">
+          <div class="panel-header">
+            <h2>Products &amp; Services</h2>
+            <p>Edit product category names, descriptions, and the common fault/symptom preset list for each product. Customers select from these when registering complaints.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="layers"></i> Product Categories &amp; Issue Presets</div>
+            <div class="settings-card-sub">Select a product to edit its name, description, and fault symptom list</div>
+            <div class="product-tab-nav" id="product-tab-nav"></div>
+            <div id="product-edit-area"></div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: FIELD TECHNICIANS ── -->
+        <div class="settings-panel" id="panel-technicians">
+          <div class="panel-header">
+            <h2>Field Service Technicians</h2>
+            <p>Add, edit, or remove certified field engineers. These engineers are listed in the admin helpdesk for complaint assignment and dispatch.</p>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="hard-hat"></i> Certified Field Engineers</div>
+            <div class="settings-card-sub">Changes apply immediately to the Helpdesk Dashboard technician assignment</div>
+            <div style="overflow-x:auto;">
+              <table class="team-table" id="technicians-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Service Zone / Area</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="technicians-tbody"></tbody>
+              </table>
+            </div>
+            <button class="btn-add-row" onclick="addTechnicianRow()" style="margin-top:14px;">
+              <i data-lucide="user-plus"></i> Add New Field Engineer
+            </button>
+          </div>
+        </div>
+
+        <!-- ── PANEL: STAFF ACCOUNTS ── -->
+        <div class="settings-panel" id="panel-staff">
+          <div class="panel-header">
+            <h2>Staff &amp; Helpdesk Accounts</h2>
+            <p>Manage login credentials for all helpdesk staff and admin personnel. Add or remove accounts and reset passwords here.</p>
+          </div>
+
+          <div class="settings-card" style="border-color:rgba(245,158,11,0.2);">
+            <div class="settings-card-title" style="color:#f59e0b;"><i data-lucide="shield-alert" style="color:#f59e0b;"></i> Important Security Note</div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);">Passwords are stored locally on this device. For production use, integrate a secure backend authentication system. Never share your admin credentials with customers.</div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-title"><i data-lucide="users"></i> Helpdesk Login Accounts</div>
+            <div class="settings-card-sub">All accounts can log in to both Helpdesk Dashboard and Settings Manager</div>
+            <div style="overflow-x:auto;">
+              <table class="staff-table" id="staff-accounts-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Display Name</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                    <th>Remove</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-tbody"></tbody>
+              </table>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;align-items:center;">
+              <button type="button" class="btn-add-row" onclick="addStaffRow()">
+                <i data-lucide="user-plus"></i> Add New Staff Account
+              </button>
+              <button type="button" class="btn-primary" onclick="saveAllSettings()" style="padding:9px 18px;font-size:0.88rem;">
+                <i data-lucide="save"></i> Save Staff Accounts
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PANEL: RESET ── -->
+        <div class="settings-panel" id="panel-reset">
+          <div class="panel-header">
+            <h2>Reset to Defaults</h2>
+            <p>Restore all website and team settings back to the original Royal Eye Solar Power default values.</p>
+          </div>
+
+          <div class="settings-card" style="border-color:rgba(239,68,68,0.25);">
+            <div class="settings-card-title" style="color:#ef4444;"><i data-lucide="alert-triangle" style="color:#ef4444;"></i> Danger Zone</div>
+            <div class="settings-card-sub">These actions cannot be undone. All custom edits will be lost.</div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <div>
+                  <div style="font-weight:700;color:#fff;font-size:0.92rem;">Reset Website Content</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Restore company info, hero text, partner brands, and product presets</div>
+                </div>
+                <button class="btn-primary" style="background:rgba(239,68,68,0.2);color:#ef4444;box-shadow:none;border:1px solid rgba(239,68,68,0.3);" onclick="resetSettings('content')">
+                  <i data-lucide="refresh-ccw"></i> Reset Content
+                </button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <div>
+                  <div style="font-weight:700;color:#fff;font-size:0.92rem;">Reset Field Technicians</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Restore the default 5 field engineer profiles</div>
+                </div>
+                <button class="btn-primary" style="background:rgba(239,68,68,0.2);color:#ef4444;box-shadow:none;border:1px solid rgba(239,68,68,0.3);" onclick="resetSettings('technicians')">
+                  <i data-lucide="refresh-ccw"></i> Reset Team
+                </button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(255,255,255,0.06);">
+                <div>
+                  <div style="font-weight:700;color:#fff;font-size:0.92rem;">Reset Staff Accounts</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Restore the 4 default helpdesk login credentials</div>
+                </div>
+                <button class="btn-primary" style="background:rgba(239,68,68,0.2);color:#ef4444;box-shadow:none;border:1px solid rgba(239,68,68,0.3);" onclick="resetSettings('staff')">
+                  <i data-lucide="refresh-ccw"></i> Reset Accounts
+                </button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(239,68,68,0.06);border-radius:8px;border:1px solid rgba(239,68,68,0.2);">
+                <div>
+                  <div style="font-weight:700;color:#ef4444;font-size:0.92rem;">⚠ Full Reset — Everything</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted);">Reset ALL settings including complaints data, team, and accounts</div>
+                </div>
+                <button class="btn-primary" style="background:#ef4444;box-shadow:0 3px 12px rgba(239,68,68,0.4);" onclick="resetSettings('all')">
+                  <i data-lucide="trash-2"></i> Full Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main><!-- /settings-content -->
+    </div><!-- /settings-layout -->
+
+    <!-- Fixed Save Bar -->
+    <div class="save-bar">
+      <div class="save-bar-hint">
+        <i data-lucide="info"></i>
+        <span id="save-hint-text">All changes auto-save when you click Save. Customer portal updates immediately.</span>
+      </div>
+      <div class="save-bar-actions">
+        <button class="btn-preview" onclick="reloadDefaults()">
+          <i data-lucide="refresh-cw"></i> Discard Changes
+        </button>
+        <button class="btn-primary" onclick="saveAllSettings()">
+          <i data-lucide="save"></i> Save All Changes
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /settings-app -->
+
+  <script src="config.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
