@@ -8,11 +8,13 @@ Official Customer Complaint & Maintenance Request Portal for **Royal Eye Solar P
 
 ## 🚀 Live Hosted Deployment Links
 
-| Resource | Hosted URL / Target |
+| Resource | Hosted URL |
 | :--- | :--- |
 | **GitHub Repository** | [github.com/supportroyaleyesolar/support](https://github.com/supportroyaleyesolar/support) |
-| **GitHub Pages Frontend** | [supportroyaleyesolar.github.io/support](https://supportroyaleyesolar.github.io/support/) |
-| **Render Backend REST API** | [supportroyaleyesolar.onrender.com](https://supportroyaleyesolar.onrender.com) |
+| **🏠 Customer Portal** | [supportroyaleyesolar.onrender.com/portal](https://supportroyaleyesolar.onrender.com/portal) |
+| **🛡️ Admin / Helpdesk Portal** | [supportroyaleyesolar.onrender.com/admin](https://supportroyaleyesolar.onrender.com/admin) |
+| **⚙️ Settings / CMS Page** | [supportroyaleyesolar.onrender.com/settings](https://supportroyaleyesolar.onrender.com/settings) |
+| **🔗 API Health Check** | [supportroyaleyesolar.onrender.com/api/health](https://supportroyaleyesolar.onrender.com/api/health) |
 
 ---
 
@@ -21,15 +23,15 @@ Official Customer Complaint & Maintenance Request Portal for **Royal Eye Solar P
 - ⚡ **Customer Complaint Lodge & Service Dispatch**: Quick ticket creation for Inverters, REX Lithium Batteries, Tubular Batteries, Solar Power Plants, and Solar Water Heaters.
 - 🔍 **Real-Time Ticket Tracker**: Track status by Complaint Ticket ID (`REX-2026-XXXX`), Mobile Number, or KSEB Consumer Number.
 - ⚡ **KSEB Electrical Section Search**: Instant lookup across 700+ Kerala KSEB electrical section offices.
-- 🛡️ **Staff Helpdesk Dashboard (`admin.html`)**: Password-protected dashboard for helpdesk executives and field engineers to view, assign, update, and resolve complaints.
-- ⚙️ **Website CMS & Settings Manager (`settings.html`)**: Edit company info, toll-free numbers, banner text, partner brands, technician directory, and staff login credentials without touch of code.
+- 🛡️ **Staff Helpdesk Dashboard (`/admin`)**: Password-protected dashboard for helpdesk executives and field engineers to view, assign, update, and resolve complaints.
+- ⚙️ **Website CMS & Settings Manager (`/settings`)**: Edit company info, toll-free numbers, banner text, partner brands, technician directory, and staff login credentials without touch of code.
 - ☁️ **Cloud REST API & Persistent Data Storage (Render.com)**: Node.js Express server providing persistent JSON data storage for tickets and settings, with seamless offline `localStorage` fallback.
 
 ---
 
 ## 🔐 Helpdesk Staff Login Credentials
 
-Log in at `admin.html` or `settings.html`:
+Log in at `/admin` or `/settings`:
 
 | Role | Username | Password |
 | :--- | :--- | :--- |
@@ -59,35 +61,27 @@ Log in at `admin.html` or `settings.html`:
    ```
 
 4. **Open in Browser**:
-   - Customer Portal: `http://localhost:3000/`
-   - Staff Helpdesk: `http://localhost:3000/admin.html`
-   - Settings Manager: `http://localhost:3000/settings.html`
+   - Customer Portal: `http://localhost:3000/` or `http://localhost:3000/portal`
+   - Admin Helpdesk: `http://localhost:3000/admin`
+   - Settings Manager: `http://localhost:3000/settings`
    - Healthcheck API: `http://localhost:3000/api/health`
 
 ---
 
-## 🌐 Deploying to Render.com (Backend API & Data Storage)
+## 🌐 Deploying to Render.com
 
 1. Log in to [Render.com](https://render.com/).
-2. Click **New +** -> **Web Service**.
+2. Click **New +** → **Web Service**.
 3. Connect your GitHub repository: `supportroyaleyesolar/support`.
-4. Render will automatically detect `render.yaml` or use the following settings:
+4. Render will automatically detect `render.yaml` and configure:
    - **Environment**: Node
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-5. Click **Create Web Service**. Your persistent REST API will be live at `https://supportroyaleyesolar.onrender.com`.
-
----
-
-## 📄 Deploying to GitHub Pages (Frontend UI)
-
-1. Navigate to your GitHub repository: `https://github.com/supportroyaleyesolar/support`.
-2. Go to **Settings** -> **Pages**.
-3. Under **Build and deployment**:
-   - **Source**: Deploy from a branch
-   - **Branch**: `main` / `root (/)`
-4. Click **Save**.
-5. Your site will be published at `https://supportroyaleyesolar.github.io/support/`.
+   - **Health Check Path**: `/api/health`
+5. Click **Create Web Service**. Your site will be live at:
+   - 🏠 Customer Portal → `https://supportroyaleyesolar.onrender.com/portal`
+   - 🛡️ Admin Portal → `https://supportroyaleyesolar.onrender.com/admin`
+   - ⚙️ Settings Page → `https://supportroyaleyesolar.onrender.com/settings`
 
 ---
 

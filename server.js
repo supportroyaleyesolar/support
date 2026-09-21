@@ -186,7 +186,23 @@ app.post('/api/settings', (req, res) => {
 // ── STATIC FILES SERVING ───────────────────────────────────────
 app.use(express.static(__dirname));
 
-// Fallback to index.html for root navigation
+// ── NAMED PORTAL ROUTES (clean URLs) ───────────────────────────
+// Customer Portal
+app.get('/portal', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Admin / Helpdesk Dashboard
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Settings / CMS Manager
+app.get('/settings', (req, res) => {
+  res.sendFile(path.join(__dirname, 'settings.html'));
+});
+
+// Fallback: serve index.html for any unknown non-API path
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
