@@ -332,7 +332,7 @@ class RexServiceApp {
     this.onProductSelected('Inverters');
     this.refreshIcons();
 
-    // Populate KSEB branches datalist if loaded
+    // Populate KSEB branches datalist for legacy data compatibility
     if (typeof populateKsebDatalist === 'function') {
       populateKsebDatalist('kseb-branches-list');
     }
@@ -342,20 +342,9 @@ class RexServiceApp {
     if (urlParams.has('track')) {
       const trackId = urlParams.get('track');
       this.switchView('tracker');
-      this.setTrackerMode('ticket');
       const qInput = document.getElementById('tracker-query');
       if (qInput) qInput.value = trackId;
       this.searchTicket(trackId);
-    } else if (urlParams.has('kseb')) {
-      const ksebId = urlParams.get('kseb');
-      const branch = urlParams.get('branch') || '';
-      this.switchView('tracker');
-      this.setTrackerMode('kseb');
-      const cInput = document.getElementById('tracker-kseb-consumer');
-      const bInput = document.getElementById('tracker-kseb-branch');
-      if (cInput) cInput.value = ksebId;
-      if (bInput) bInput.value = branch;
-      if (ksebId) this.handleKsebTrackerSearch(new Event('submit'));
     }
   }
 
@@ -415,13 +404,8 @@ class RexServiceApp {
     } else if (viewName === 'tracker') {
       document.getElementById('view-tracker').classList.add('active-view');
       document.getElementById('tab-tracker').classList.add('active');
-      // Focus the currently visible search input
-      const activeForm = document.getElementById('form-kseb-tracker');
-      if (activeForm && activeForm.style.display !== 'none') {
-        document.getElementById('tracker-kseb-consumer')?.focus();
-      } else {
-        document.getElementById('tracker-query')?.focus();
-      }
+      // Focus search input
+      setTimeout(() => document.getElementById('tracker-query')?.focus(), 50);
     }
     // Admin view is a separate page: admin.html
 
@@ -616,7 +600,8 @@ class RexServiceApp {
     this.closeSuccessModal();
     if (this.lastSubmittedTicket) {
       this.switchView('tracker');
-      document.getElementById('tracker-query').value = this.lastSubmittedTicket.id;
+      const qInput = document.getElementById('tracker-query');
+      if (qInput) qInput.value = this.lastSubmittedTicket.id;
       this.renderTrackerResult(this.lastSubmittedTicket);
     }
   }
@@ -778,11 +763,6 @@ class RexServiceApp {
           <div>
             <div class="tracking-id">${ticket.id}</div>
             <div class="tracking-date">Registered on: ${ticket.date} &bull; Service Hub: Edamuttam, Thrissur</div>
-            ${ticket.ksebConsumer ? `
-              <div class="kseb-badge-chip">
-                <i data-lucide="zap"></i> KSEB Consumer: <strong>${ticket.ksebConsumer}</strong> &bull; Section: <strong>${ticket.ksebBranch || 'General'}</strong>
-              </div>
-            ` : ''}
           </div>
           <div>
             <span class="badge-status status-${ticket.status.replace(/\s+/g, '')}">${ticket.status}</span>
@@ -811,16 +791,6 @@ class RexServiceApp {
             <div class="info-item-label">Service Address</div>
             <div class="info-item-val">${ticket.address}, ${ticket.landmark}, ${ticket.district}</div>
           </div>
-          ${ticket.ksebConsumer ? `
-            <div>
-              <div class="info-item-label">KSEB Consumer No.</div>
-              <div class="info-item-val" style="color: var(--secondary-gold); font-weight: 700;">${ticket.ksebConsumer}</div>
-            </div>
-            <div>
-              <div class="info-item-label">KSEB Section / Branch</div>
-              <div class="info-item-val">${ticket.ksebBranch || 'Kerala Section'}</div>
-            </div>
-          ` : ''}
         </div>
 
         <div style="margin-bottom: 20px;">
@@ -831,12 +801,30 @@ class RexServiceApp {
           </div>
         </div>
 
-        ${ticket.resolutionNotes ? `
-          <div style="margin-top: 20px; padding: 14px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px;">
-            <div style="font-size: 0.78rem; font-weight: 700; color: #10b981; margin-bottom: 4px;">SERVICE ENGINEER REMARKS:</div>
-            <div style="font-size: 0.9rem; color: var(--text-primary);">${ticket.resolutionNotes}</div>
+        ${ticket.assignedTech && ticket.assignedTech !== 'Unassigned' ? `
+          <div style="margin-top: 16px; padding: 14px; background: rgba(220,38,38,0.07); border: 1px solid rgba(220,38,38,0.18); border-radius: 10px; display: flex; align-items: center; gap: 12px;">
+            <div style="flex-shrink:0; width:38px; height:38px; border-radius:50%; background:rgba(220,38,38,0.15); display:flex; align-items:center; justify-content:center; color:var(--primary-red);">
+              <i data-lucide="user-check" style="width:18px;height:18px;"></i>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--primary-red); text-transform: uppercase; letter-spacing: 0.05em;">Assigned Technician</div>
+              <div style="font-size: 0.95rem; color: var(--text-primary); font-weight: 600;">${ticket.assignedTech}</div>
+              ${ticket.techPhone ? `<div style="font-size: 0.82rem; color: var(--text-muted);"><a href="tel:${ticket.techPhone}" style="color:var(--secondary-gold);">${ticket.techPhone}</a></div>` : ''}
+            </div>
           </div>
         ` : ''}
+
+        ${ticket.resolutionNotes ? `
+          <div style="margin-top: 16px; padding: 14px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #10b981; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Service Engineer Remarks</div>
+            <div style="font-size: 0.9rem; color: var(--text-primary); line-height:1.55;">${ticket.resolutionNotes}</div>
+          </div>
+        ` : ''}
+
+        <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <a href="tel:+918075873679" style="display:inline-flex;align-items:center;gap:6px;background:rgba(220,38,38,0.12);border:1px solid rgba(220,38,38,0.25);border-radius:8px;padding:9px 16px;font-size:0.85rem;font-weight:600;color:#fff;text-decoration:none;"><i data-lucide="phone-call" style="width:15px;height:15px;"></i> Call Service Desk</a>
+          <a href="https://wa.me/918075873679?text=Hello%20Royal%20Eye%20Solar%20Power,%20I%20need%20help%20with%20my%20ticket%20${ticket.id}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,0.10);border:1px solid rgba(37,211,102,0.25);border-radius:8px;padding:9px 16px;font-size:0.85rem;font-weight:600;color:#25d366;text-decoration:none;"><i data-lucide="message-circle" style="width:15px;height:15px;"></i> WhatsApp</a>
+        </div>
       </div>
     `;
 
